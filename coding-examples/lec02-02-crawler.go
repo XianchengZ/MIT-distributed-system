@@ -86,7 +86,7 @@ func worker(url string, ch chan []string, fetcher Fetcher) {
 func coordinator(ch chan []string, fetcher Fetcher) {
 	n := 1
 	fetched := make(map[string]bool)
-	for urls := range ch {
+	for urls := range ch { // keeps reading the channel
 		for _, u := range urls {
 			if fetched[u] == false {
 				fetched[u] = true
@@ -94,7 +94,7 @@ func coordinator(ch chan []string, fetcher Fetcher) {
 				go worker(u, ch, fetcher)
 			}
 		}
-		n -= 1
+		n -= 1 // keep track of number of workers
 		if n == 0 {
 			break
 		}
@@ -104,7 +104,7 @@ func coordinator(ch chan []string, fetcher Fetcher) {
 func ConcurrentChannel(url string, fetcher Fetcher) {
 	ch := make(chan []string)
 	go func() {
-		ch <- []string{url}
+		ch <- []string{url} // starting url
 	}()
 	coordinator(ch, fetcher)
 }
